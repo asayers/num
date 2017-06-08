@@ -5,6 +5,7 @@ use std::fmt;
 use std::cmp::Ordering::{self, Less, Greater, Equal};
 use std::{i64, u64};
 use std::ascii::AsciiExt;
+use std::iter::{Sum, Product};
 
 #[cfg(feature = "serde")]
 use serde;
@@ -856,6 +857,32 @@ pub trait RandBigInt {
     /// the upper bound is not greater than the lower bound.
     fn gen_bigint_range(&mut self, lbound: &BigInt, ubound: &BigInt) -> BigInt;
 }
+
+impl Sum for BigInt {
+    fn sum<I: Iterator<Item=BigInt>>(iter: I) -> BigInt {
+        iter.fold(Zero::zero(), Add::add)
+    }
+}
+
+impl Product for BigInt {
+    fn product<I: Iterator<Item=BigInt>>(iter: I) -> BigInt {
+        iter.fold(One::one(), Mul::mul)
+    }
+}
+
+impl<'a> Sum<&'a BigInt> for BigInt {
+    fn sum<I: Iterator<Item=&'a BigInt>>(iter: I) -> BigInt {
+        iter.fold(Zero::zero(), Add::add)
+    }
+}
+
+impl<'a> Product<&'a BigInt> for BigInt {
+    fn product<I: Iterator<Item=&'a BigInt>>(iter: I) -> BigInt {
+        iter.fold(One::one(), Mul::mul)
+    }
+}
+
+
 
 #[cfg(any(feature = "rand", test))]
 impl<R: Rng> RandBigInt for R {
