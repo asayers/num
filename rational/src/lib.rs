@@ -36,7 +36,7 @@ use std::str::FromStr;
 use bigint::{BigInt, BigUint, Sign};
 
 use integer::Integer;
-use traits::{FromPrimitive, Float, PrimInt, Num, Signed, Zero, One, Bounded, NumCast};
+use traits::{FromPrimitive, Float, PrimInt, Num, Signed, Zero, One, Bounded, NumCast, ToPrimitive};
 
 /// Represents the ratio between 2 numbers.
 #[derive(Copy, Clone, Hash, Debug)]
@@ -258,6 +258,10 @@ impl Ratio<BigInt> {
             numer = numer << (exponent as usize);
             Some(Ratio::from_integer(BigInt::from_biguint(bigint_sign, numer)))
         }
+    }
+
+    pub fn as_float(&self) -> f64 {
+        self.numer().to_f64().unwrap() / self.denom().to_f64().unwrap()
     }
 }
 
